@@ -1,0 +1,18 @@
+<form class="upload-form" hx-post="{% url 'upload-photo' event.slug %}" hx-target="this" hx-swap="outerHTML" enctype="multipart/form-data">
+  {% csrf_token %}
+  <h2>Compartilhe seu olhar</h2>
+  <p>Essa lembrança ficará para sempre no álbum de Helena & Victor.</p>
+  {% if upload_error %}<div class="form-alert" role="alert">{{ upload_error }}</div>{% endif %}
+  <label class="field-label" for="id_guest_name">Seu nome</label>{{ form.guest_name }}
+  <label class="field-label" for="id_caption">Legenda</label>{{ form.caption }}
+  <label class="field-label" for="id_category">Momento</label>{{ form.category }}
+  <input class="visually-hidden" id="camera-input" name="image" type="file" accept="image/*" capture="environment">
+  <input class="visually-hidden" id="album-input" name="image" type="file" accept="image/*">
+  <div class="photo-source">
+    <button class="source-button camera" type="button" data-action="choose-photo" data-input-id="camera-input"><span>◉</span><b>Tirar foto</b><small>Abra a câmera</small></button>
+    <button class="source-button" type="button" data-action="choose-photo" data-input-id="album-input"><span>▧</span><b>Escolher do álbum</b><small>Use uma foto existente</small></button>
+  </div>
+  {% for error in form.image.errors %}<small class="error">{{ error }}</small>{% endfor %}
+  <div class="preview" aria-live="polite"></div>
+  <button class="button primary submit-photo" type="submit">Guardar essa lembrança</button>
+</form>

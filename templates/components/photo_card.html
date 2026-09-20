@@ -1,0 +1,13 @@
+<article class="photo-card" data-photo="{{ photo.id }}">
+  <button class="photo-image" hx-get="{% url 'photo-detail' photo.id %}{% if active_category %}?category={{ active_category }}{% endif %}" hx-target="#lightbox" hx-swap="innerHTML" aria-label="Abrir fotografia">
+    <img src="{{ photo.image.url }}" alt="Foto enviada por {{ photo.guest_name|default:'um convidado' }}" loading="lazy">
+  </button>
+  <div class="photo-meta">
+    <strong>{{ photo.guest_name|default:'Um convidado' }}</strong>
+    {% if photo.category %}<span class="category-tag">{{ photo.get_category_display }}</span>{% endif %}
+    {% if photo.caption %}<p>{{ photo.caption }}</p>{% endif %}
+    <time>{{ photo.created_at|timesince }} atrás</time>
+    {% include 'components/reactions.html' %}
+    {% if request.user.is_authenticated %}<a class="download-link" href="{% url 'download-photo' photo.id %}">Baixar original</a>{% endif %}
+  </div>
+</article>

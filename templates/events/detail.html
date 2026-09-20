@@ -1,0 +1,17 @@
+{% extends 'base.html' %}{% block content %}
+<main>
+  <section class="hero"><div class="botanical left">❦</div><div class="hero-inner"><div class="monogram">H <i>&</i> V</div><p class="eyebrow">03 · 10 · 2026</p><h1>{{ event.name }}</h1><div class="rule">✦</div><p class="welcome">{{ event.welcome_text|default:'Hoje, cada olhar e cada sorriso fazem parte da nossa história.' }}</p><div class="actions"><button class="button primary" data-action="open-upload">Compartilhar uma foto</button><button class="button" data-action="share-album" data-share-url="{% url 'share-text' event.slug %}">Compartilhar álbum</button></div></div><div class="botanical right">❦</div></section>
+  <section class="memories" id="memories" data-updates-url="{% url 'photo-updates' event.slug %}" data-new-url="{% url 'photo-newer' event.slug %}" data-latest-cursor="{{ latest_cursor }}" data-poll-seconds="{{ poll_seconds }}">
+    <header><p class="eyebrow">NOSSO ÁLBUM VIVO</p><h2>Momentos de hoje</h2><p>Registros que fazem parte da nossa história.</p></header>
+    <nav class="filters" aria-label="Filtrar momentos">
+      <button class="active" data-action="select-category" data-category="" hx-get="{% url 'photo-page' event.slug %}" hx-target="#gallery" hx-swap="innerHTML">Todas</button>
+      {% for value, label in categories %}<button data-action="select-category" data-category="{{ value }}" hx-get="{% url 'photo-page' event.slug %}?category={{ value }}" hx-target="#gallery" hx-swap="innerHTML">{{ label }}</button>{% endfor %}
+    </nav>
+    <button class="new-memories" id="new-memories" hidden data-action="load-new-photos">✨ <span>Novas lembranças</span> — Ver agora</button>
+    <div class="gallery" id="gallery">{% include 'components/photo_page.html' with is_initial_filter=True category='' %}</div>
+  </section>
+</main>
+<footer><div class="monogram small">H <i>&</i> V</div><p>Obrigado por fazer parte deste capítulo da nossa história.</p><small>03.10.2026 · Feito com amor e muitas lembranças.</small></footer>
+<aside class="upload-sheet" id="upload-sheet" aria-hidden="true"><button class="close" data-action="close-upload" aria-label="Fechar">×</button>{% include 'components/upload_form.html' %}</aside>
+<button class="floating-upload" data-action="open-upload" aria-label="Adicionar foto">＋ Foto</button><div id="lightbox"></div>
+{% endblock %}

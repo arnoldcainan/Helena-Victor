@@ -1,0 +1,9 @@
+<div class="lightbox-backdrop" data-action="close-lightbox-backdrop" role="presentation">
+  <section class="lightbox" data-swipe-lightbox>
+    <button class="close" data-action="close-lightbox" aria-label="Fechar">×</button>
+    {% if previous %}<button class="lightbox-nav previous" hx-get="{% url 'photo-detail' previous.id %}{% if category %}?category={{ category }}{% endif %}" hx-target="#lightbox" aria-label="Foto anterior">‹</button>{% endif %}
+    <img src="{{ photo.image.url }}" alt="Foto enviada por {{ photo.guest_name|default:'um convidado' }}">
+    {% if next %}<button class="lightbox-nav next" hx-get="{% url 'photo-detail' next.id %}{% if category %}?category={{ category }}{% endif %}" hx-target="#lightbox" aria-label="Próxima foto">›</button>{% endif %}
+    <div><p class="eyebrow">{{ photo.created_at|date:'d \d\e F · H:i' }}</p><h2>{{ photo.guest_name|default:'Um convidado' }}</h2>{% if photo.category %}<span class="category-tag">{{ photo.get_category_display }}</span>{% endif %}<p>{{ photo.caption }}</p>{% include 'components/reactions.html' %}</div>
+  </section>
+</div>
