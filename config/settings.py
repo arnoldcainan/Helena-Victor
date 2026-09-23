@@ -32,6 +32,9 @@ if not SECRET_KEY:
         raise ImproperlyConfigured("SECRET_KEY é obrigatória quando DEBUG=False.")
 
 ALLOWED_HOSTS = env_list("ALLOWED_HOSTS", "localhost,127.0.0.1")
+railway_domain = os.getenv("RAILWAY_PUBLIC_DOMAIN")
+if railway_domain and railway_domain not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append(railway_domain)
 if DEBUG and "testserver" not in ALLOWED_HOSTS:
     ALLOWED_HOSTS.append("testserver")
 if not DEBUG and not ALLOWED_HOSTS:
@@ -74,7 +77,9 @@ LOGIN_URL = "/login/"
 LOGIN_REDIRECT_URL = "/casal/"
 LOGOUT_REDIRECT_URL = "/"
 CSRF_TRUSTED_ORIGINS = env_list("CSRF_TRUSTED_ORIGINS")
-EVENT_BASE_URL = os.getenv("EVENT_BASE_URL", "http://localhost:8000")
+if railway_domain and f"https://{railway_domain}" not in CSRF_TRUSTED_ORIGINS:
+    CSRF_TRUSTED_ORIGINS.append(f"https://{railway_domain}")
+EVENT_BASE_URL = os.getenv("EVENT_BASE_URL", f"https://{railway_domain}" if railway_domain else "http://localhost:8000")
 AUTO_APPROVE_UPLOADS = env_bool("AUTO_APPROVE_UPLOADS", True)
 MAX_UPLOAD_SIZE_MB = env_int("MAX_UPLOAD_SIZE_MB", 20)
 MAX_IMAGE_PIXELS = env_int("MAX_IMAGE_PIXELS", 40_000_000)
