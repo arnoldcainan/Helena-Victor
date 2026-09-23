@@ -55,6 +55,7 @@ class ReactionAndSecurityTests(TestCase):
 
     def test_authenticated_downloads(self):
         user = get_user_model().objects.create_user("couple", password="secret")
+        self.event.users.add(user)
         self.client.force_login(user)
         response = self.client.get(reverse("download-photo", args=[self.photo.pk]))
         self.assertEqual(response.status_code, 200)
@@ -70,3 +71,21 @@ class ReactionAndSecurityTests(TestCase):
         response = self.client.get(reverse("share-text", args=[self.event.slug]))
         self.assertTrue(response.json()["url"].endswith("/e/wedding/"))
         self.assertNotIn("/share/", response.json()["url"])
+
+    def test_instagram_style_reaction_rendering_and_csrf(self):
+        # Initial view: outline heart
+        detail = self.client.get(reverse("event-detail", args=[self.event.slug]))
+        self.assertContains(detail, "heart-icon outline")
+        self.assertContains(detail, "reaction-btn")
+
+        # React with heart: returns filled heart and active class
+        response = self.client.post(self.react_url, {"emoji": "heart"})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "heart-icon filled")
+        self.assertContains(response, "active")
+
+        # React again: toggles back to outline
+        response = self.client.post(self.react_url, {"emoji": "heart"})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "heart-icon outline")
+

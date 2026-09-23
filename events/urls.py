@@ -14,6 +14,9 @@ urlpatterns = [
     path("photos/<int:pk>/react/", views.react, name="react"),
     path("casal/", views.couple_dashboard, name="couple-dashboard"),
     path("casal/photos/<int:pk>/download/", views.download_photo, name="download-photo"),
+    path("casal/photos/<int:pk>/toggle-approval/", views.toggle_photo_approval, name="toggle-photo-approval"),
     path("casal/events/<int:pk>/download/", views.download_album, name="download-album"),
     path("staff/event/<int:pk>/qrcode/", views.qrcode_page, name="qrcode"),
+    path("login/", views.couple_login, name="login"),
+    path("logout/", views.couple_logout, name="logout"),
 ]

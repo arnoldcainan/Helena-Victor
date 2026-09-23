@@ -1,1 +1,93 @@
 .upload-form select{border:1px solid var(--champagne);border-radius:12px;padding:.75rem;background:white;color:var(--text)}.form-alert{background:#fff1ed;border:1px solid #dca99c;color:#814c40;border-radius:12px;padding:.75rem;font-size:.9rem}.preview{display:grid;gap:.35rem}.preview img{max-height:190px;max-width:100%;border-radius:12px}.preview small{color:#8d7569}.category-tag{display:inline-block;margin-left:.35rem;padding:.12rem .45rem;border-radius:99px;background:#eff0e5;color:#73785f;font-size:.68rem}.reactions button.active{background:#ead8cc;box-shadow:inset 0 0 0 1px #caa693}.new-memories{position:sticky;top:1rem;z-index:4;display:block;margin:0 auto 1.25rem;border:1px solid var(--champagne);border-radius:99px;padding:.7rem 1rem;background:var(--paper);color:var(--coffee);box-shadow:0 8px 24px #745d5233}.new-memories[hidden]{display:none}.load-more{column-span:all;text-align:center;padding:1rem;color:#8d7569}.download-link{display:block;margin-top:.65rem;color:var(--coffee);font-size:.8rem}.dashboard-actions{display:flex;gap:.7rem;flex-wrap:wrap;margin:1.2rem 0}.lightbox{position:relative}.lightbox-nav{position:absolute;top:50%;z-index:2;width:44px;height:44px;border:0;border-radius:50%;background:#fffdfcdd;color:var(--coffee);font-size:2rem;line-height:1}.lightbox-nav.previous{left:1.5rem}.lightbox-nav.next{right:calc(33% + 1.5rem)}@media(max-width:600px){.lightbox-nav.previous{left:.7rem}.lightbox-nav.next{right:.7rem}.photo-source{grid-template-columns:1fr}.upload-sheet{max-height:94svh;overflow:auto}}
+.photo-card.is-hidden{opacity:.72;border-color:#e4aba0;background:#fff8f6}
+.photo-image{position:relative}
+.moderation-badge{position:absolute;top:.5rem;left:.5rem;z-index:2}
+.status-badge{display:inline-block;font-size:.72rem;font-weight:600;padding:.2rem .55rem;border-radius:99px;box-shadow:0 2px 6px rgba(0,0,0,.12)}
+.status-badge.approved{background:#eaf4e6;color:#356330;border:1px solid #b4d8ab}
+.status-badge.hidden{background:#fee9e6;color:#a8362a;border:1px solid #f6b5ad}
+.moderation-actions{display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-top:.75rem;flex-wrap:wrap}
+.moderation-btn{font-size:.78rem;font-weight:500;padding:.38rem .75rem;border-radius:99px;border:1px solid transparent;cursor:pointer;transition:.2s}
+.moderation-btn.danger{background:#fdedeb;color:#a8362a;border-color:#f5c2bc}
+.moderation-btn.danger:hover{background:#f8d8d3}
+.moderation-btn.secondary{background:#eff4ec;color:#356330;border-color:#c2dcc0}
+.moderation-btn.secondary:hover{background:#e0ecd8}
+.dashboard-header{margin-bottom:1.5rem}
+.back-link{display:inline-block;margin-bottom:.5rem;color:var(--coffee);text-decoration:none;font-weight:500}
+.event-subtitle{color:#8b786c;margin-top:-.3rem}
+.dashboard-filter-tabs{display:flex;gap:.5rem;margin:1.8rem 0 1.2rem;flex-wrap:wrap}
+.dashboard-filter-tabs a{text-decoration:none;font-size:.85rem;padding:.4rem .85rem;border-radius:99px;border:1px solid var(--champagne);color:var(--coffee);background:var(--paper);transition:.2s}
+.dashboard-filter-tabs a.active{background:var(--coffee);color:white;border-color:var(--coffee)}
+.event-selector-bar{margin:1rem 0;display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
+.event-selector-bar select{border:1px solid var(--champagne);border-radius:10px;padding:.4rem .8rem;background:white;color:var(--coffee);font-size:.9rem}
+
+/* Top Navbar */
+.site-header{position:sticky;top:0;z-index:10;background:rgba(252,248,244,.88);backdrop-filter:blur(12px);border-bottom:1px solid rgba(215,190,167,.35)}
+.top-nav{max-width:1400px;margin:0 auto;padding:.5rem 1.5rem}
+.nav-container{display:flex;justify-content:space-between;align-items:center}
+.nav-brand{text-decoration:none;display:flex;align-items:center;gap:.55rem}
+.brand-monogram{font-family:var(--script);font-size:2.2rem;color:#af8870;line-height:1}
+.brand-monogram i{font-family:var(--serif);font-size:.6em;font-style:normal}
+.brand-title{font-family:var(--serif);font-size:1.15rem;color:var(--coffee);letter-spacing:.04em}
+.nav-actions{display:flex;align-items:center;gap:.75rem}
+.nav-link{text-decoration:none;font-size:.85rem;color:var(--coffee);padding:.45rem .95rem;border-radius:99px;border:1px solid var(--champagne);background:rgba(255,255,255,.7);display:inline-flex;align-items:center;gap:.35rem;transition:.2s}
+.nav-link:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(116,93,82,.12)}
+.nav-btn-logout{border:0;background:transparent;font-size:.85rem;color:#927a6c;cursor:pointer;padding:.4rem .6rem;text-decoration:underline;text-underline-offset:3px;transition:.2s}
+.nav-btn-logout:hover{color:#a8362a}
+.logout-form{display:inline;margin:0}
+
+/* Login Page */
+.login-page{min-height:85svh;display:grid;place-items:center;padding:2rem 1rem}
+.login-container{width:100%;max-width:440px}
+.login-card{background:var(--paper);border:1px solid rgba(215,190,167,.7);border-radius:24px;padding:2.5rem 2rem;box-shadow:0 15px 45px rgba(116,93,82,.1);text-align:center;animation:reveal .8s both}
+.login-brand .monogram{margin-bottom:.35rem;display:inline-block}
+.login-brand h1{font:500 2.2rem/1.2 var(--serif);color:var(--coffee);margin:.3rem 0}
+.login-desc{font-size:.88rem;color:#85746b;line-height:1.5;margin:0 auto 1.5rem;max-width:340px}
+.login-form{display:grid;gap:1.1rem;text-align:left}
+.form-group{display:grid;gap:.35rem}
+.login-input{width:100%;border:1px solid var(--champagne);border-radius:14px;padding:.8rem 1rem;background:#fff;font-size:.95rem;color:var(--text);outline:none;transition:border-color .2s,box-shadow .2s}
+.login-input:focus{border-color:var(--coffee);box-shadow:0 0 0 3px rgba(116,93,82,.15)}
+.password-field-wrapper{position:relative;display:flex;align-items:center}
+.password-input{padding-right:3.2rem}
+.toggle-password-btn{position:absolute;right:.65rem;top:50%;transform:translateY(-50%);border:0;background:transparent;width:36px;height:36px;padding:0;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;border-radius:50%;color:#a48f83;transition:all .2s ease}
+.toggle-password-btn:hover{color:var(--coffee);background:rgba(116,93,82,.08)}
+.toggle-password-btn:focus-visible{outline:2px solid var(--champagne);color:var(--coffee)}
+.toggle-password-btn .eye-icon{display:block;transition:transform .15s ease}
+.toggle-password-btn .eye-closed{display:none}
+.toggle-password-btn[aria-pressed="true"] .eye-open{display:none}
+.toggle-password-btn[aria-pressed="true"] .eye-closed{display:block}
+.toggle-password-btn:active .eye-icon{transform:scale(.9)}
+.login-submit-btn{width:100%;margin-top:.5rem;padding:.9rem;font-size:1rem}
+.login-footer{margin-top:1.5rem;text-align:center}
+.login-back-link{font-size:.85rem;color:#8c786d;text-decoration:none}
+.login-back-link:hover{text-decoration:underline;color:var(--coffee)}
+.login-alert{margin-bottom:1rem;text-align:left}
+
+@media(max-width:600px){
+  .brand-title{display:none}
+  .login-card{padding:2rem 1.25rem}
+}
+
+/* Instagram-Style Reactions */
+.reactions{display:flex;gap:.4rem;margin-top:.65rem;flex-wrap:wrap;align-items:center}
+.reaction-btn{display:inline-flex;align-items:center;gap:.35rem;border:1px solid rgba(215,190,167,.55);background:var(--paper);border-radius:99px;padding:.32rem .65rem;font-size:.85rem;color:var(--coffee);cursor:pointer;transition:all .2s cubic-bezier(.175,.885,.32,1.275);box-shadow:0 1px 3px rgba(116,93,82,.06)}
+.reaction-btn:hover{transform:translateY(-1px) scale(1.04);box-shadow:0 4px 12px rgba(116,93,82,.14);border-color:var(--champagne)}
+.reaction-btn:active{transform:scale(.95)}
+.reaction-count{font-size:.78rem;font-weight:500;color:#7b6a61}
+
+/* Heart button - Instagram Style */
+.reaction-heart{color:#7b6a61}
+.reaction-heart .heart-icon{display:inline-block;vertical-align:middle;transition:transform .2s ease}
+.reaction-heart.active{background:#fff0f3;border-color:#fecdd3;color:#e11d48}
+.reaction-heart.active .reaction-count{color:#e11d48;font-weight:600}
+.reaction-heart.active .heart-icon{animation:instagramHeartPop .45s cubic-bezier(.175,.885,.32,1.275) both}
+
+/* Other Reaction Buttons Active State */
+.reaction-btn.active:not(.reaction-heart){background:#fbf2eb;border-color:#dfc3b0;box-shadow:0 2px 8px rgba(175,136,112,.18)}
+.reaction-btn.active:not(.reaction-heart) .reaction-emoji{animation:instagramEmojiPop .45s cubic-bezier(.175,.885,.32,1.275) both;display:inline-block}
+.reaction-btn.active:not(.reaction-heart) .reaction-count{font-weight:600;color:var(--coffee)}
+
+@keyframes instagramHeartPop{0%{transform:scale(1)}30%{transform:scale(1.48)}60%{transform:scale(.88)}100%{transform:scale(1)}}
+@keyframes instagramEmojiPop{0%{transform:scale(1)}35%{transform:scale(1.35)}65%{transform:scale(.9)}100%{transform:scale(1)}}
+
+
+

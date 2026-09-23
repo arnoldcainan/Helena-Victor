@@ -7,6 +7,7 @@ from .models import Event, Photo, Reaction, UploadAttempt
 class EventAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("name",)}
     list_display = ("name", "date", "slug")
+    filter_horizontal = ("users",)
 
 
 @admin.register(Photo)

@@ -1,6 +1,49 @@
-<div class="reactions" id="reactions-{{ photo.id }}">
-  <button class="{% if 'heart' in photo.reacted_emojis %}active{% endif %}" hx-post="{% url 'react' photo.id %}" hx-target="#reactions-{{ photo.id }}" hx-vals='{"emoji":"heart"}' aria-label="Reagir com coração" aria-pressed="{% if 'heart' in photo.reacted_emojis %}true{% else %}false{% endif %}">❤️ <small>{{ photo.heart_count|default:0 }}</small></button>
-  <button class="{% if 'love' in photo.reacted_emojis %}active{% endif %}" hx-post="{% url 'react' photo.id %}" hx-target="#reactions-{{ photo.id }}" hx-vals='{"emoji":"love"}' aria-label="Reagir com apaixonado" aria-pressed="{% if 'love' in photo.reacted_emojis %}true{% else %}false{% endif %}">😍 <small>{{ photo.love_count|default:0 }}</small></button>
-  <button class="{% if 'touched' in photo.reacted_emojis %}active{% endif %}" hx-post="{% url 'react' photo.id %}" hx-target="#reactions-{{ photo.id }}" hx-vals='{"emoji":"touched"}' aria-label="Reagir com emoção" aria-pressed="{% if 'touched' in photo.reacted_emojis %}true{% else %}false{% endif %}">🥹 <small>{{ photo.touched_count|default:0 }}</small></button>
-  <button class="{% if 'sparkle' in photo.reacted_emojis %}active{% endif %}" hx-post="{% url 'react' photo.id %}" hx-target="#reactions-{{ photo.id }}" hx-vals='{"emoji":"sparkle"}' aria-label="Reagir com brilho" aria-pressed="{% if 'sparkle' in photo.reacted_emojis %}true{% else %}false{% endif %}">✨ <small>{{ photo.sparkle_count|default:0 }}</small></button>
+<div class="reactions" id="reactions-{{ photo.id }}" hx-target="this" hx-swap="outerHTML" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+  <button class="reaction-btn reaction-heart {% if 'heart' in photo.reacted_emojis %}active{% endif %}"
+          hx-post="{% url 'react' photo.id %}"
+          hx-vals='{"emoji":"heart"}'
+          aria-label="Curtir fotografia"
+          aria-pressed="{% if 'heart' in photo.reacted_emojis %}true{% else %}false{% endif %}"
+          title="Curtir (Coração)">
+    {% if 'heart' in photo.reacted_emojis %}
+      <svg class="heart-icon filled" viewBox="0 0 24 24" width="18" height="18" fill="#e11d48" stroke="#e11d48" stroke-width="1" aria-hidden="true">
+        <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+      </svg>
+    {% else %}
+      <svg class="heart-icon outline" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+      </svg>
+    {% endif %}
+    <span class="reaction-count">{{ photo.heart_count|default:0 }}</span>
+  </button>
+
+  <button class="reaction-btn {% if 'love' in photo.reacted_emojis %}active{% endif %}"
+          hx-post="{% url 'react' photo.id %}"
+          hx-vals='{"emoji":"love"}'
+          aria-label="Reagir com apaixonado"
+          aria-pressed="{% if 'love' in photo.reacted_emojis %}true{% else %}false{% endif %}"
+          title="Apaixonado">
+    <span class="reaction-emoji">😍</span>
+    <span class="reaction-count">{{ photo.love_count|default:0 }}</span>
+  </button>
+
+  <button class="reaction-btn {% if 'touched' in photo.reacted_emojis %}active{% endif %}"
+          hx-post="{% url 'react' photo.id %}"
+          hx-vals='{"emoji":"touched"}'
+          aria-label="Reagir com emoção"
+          aria-pressed="{% if 'touched' in photo.reacted_emojis %}true{% else %}false{% endif %}"
+          title="Emocionado">
+    <span class="reaction-emoji">🥹</span>
+    <span class="reaction-count">{{ photo.touched_count|default:0 }}</span>
+  </button>
+
+  <button class="reaction-btn {% if 'sparkle' in photo.reacted_emojis %}active{% endif %}"
+          hx-post="{% url 'react' photo.id %}"
+          hx-vals='{"emoji":"sparkle"}'
+          aria-label="Reagir com brilho"
+          aria-pressed="{% if 'sparkle' in photo.reacted_emojis %}true{% else %}false{% endif %}"
+          title="Brilho">
+    <span class="reaction-emoji">✨</span>
+    <span class="reaction-count">{{ photo.sparkle_count|default:0 }}</span>
+  </button>
 </div>

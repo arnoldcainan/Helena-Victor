@@ -1,0 +1,30 @@
+<article class="photo-card moderation-card {% if not photo.is_approved %}is-hidden{% endif %}" id="moderation-card-{{ photo.id }}" data-photo="{{ photo.id }}">
+  <div class="photo-image">
+    <img src="{{ photo.image.url }}" alt="Foto enviada por {{ photo.guest_name|default:'um convidado' }}" loading="lazy">
+    <div class="moderation-badge">
+      {% if photo.is_approved %}
+        <span class="status-badge approved">✓ Visível na galeria</span>
+      {% else %}
+        <span class="status-badge hidden">✕ Ocultada da galeria</span>
+      {% endif %}
+    </div>
+  </div>
+  <div class="photo-meta">
+    <strong>{{ photo.guest_name|default:'Um convidado' }}</strong>
+    {% if photo.category %}<span class="category-tag">{{ photo.get_category_display }}</span>{% endif %}
+    {% if photo.caption %}<p>{{ photo.caption }}</p>{% endif %}
+    <time>{{ photo.created_at|timesince }} atrás</time>
+    
+    <div class="moderation-actions">
+      <form hx-post="{% url 'toggle-photo-approval' photo.id %}" hx-target="#moderation-card-{{ photo.id }}" hx-swap="outerHTML" style="margin: 0; display: inline;">
+        {% csrf_token %}
+        {% if photo.is_approved %}
+          <button class="moderation-btn danger" type="submit" title="Ocultar esta foto do feed dos convidados">🚫 Ocultar da galeria</button>
+        {% else %}
+          <button class="moderation-btn secondary" type="submit" title="Tornar esta foto visível novamente no feed">👁️ Reexibir na galeria</button>
+        {% endif %}
+      </form>
+      <a class="download-link" href="{% url 'download-photo' photo.id %}" title="Baixar foto original">⬇️ Baixar original</a>
+    </div>
+  </div>
+</article>

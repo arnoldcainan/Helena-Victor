@@ -10,11 +10,13 @@ from pathlib import Path
 import qrcode
 from cloudinary.exceptions import Error as CloudinaryError
 from django.conf import settings
+from django.contrib.auth import login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import AuthenticationForm
 from django.db import DatabaseError, transaction
 from django.db.models import Q
-from django.http import FileResponse, Http404, HttpResponse, JsonResponse
-from django.shortcuts import get_object_or_404, render
+from django.http import FileResponse, Http404, HttpResponse, HttpResponseForbidden, JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils import timezone
@@ -180,23 +182,71 @@ def share_text(request, slug):
     return JsonResponse({"text": f"Veja e compartilhe as lembranças do casamento de {event.name} 🤍", "url": public_url})
 
 
+def can_manage_event(user, event):
+    if not user or not user.is_authenticated:
+        return False
+    if user.is_superuser or user.is_staff:
+        return True
+    return event.users.filter(pk=user.pk).exists()
+
+
 @login_required
 def couple_dashboard(request):
-    event = get_object_or_404(Event, pk=request.GET.get("event")) if request.GET.get("event") else Event.objects.order_by("date").first()
-    photos = event.photos.all() if event else Photo.objects.none()
+    if request.user.is_superuser or request.user.is_staff:
+        user_events = Event.objects.all().order_by("date")
+    else:
+        user_events = request.user.events.all().order_by("date")
+
+    event_id = request.GET.get("event")
+    if event_id:
+        event = get_object_or_404(Event, pk=event_id)
+        if not can_manage_event(request.user, event):
+            return HttpResponseForbidden("Você não tem permissão para acessar este evento.")
+    else:
+        event = user_events.first()
+
+    if not event:
+        return render(request, "couple/dashboard.html", {
+            "event": None,
+            "available_events": user_events,
+            "total": 0,
+            "approved_count": 0,
+            "hidden_count": 0,
+            "guests": 0,
+            "today": 0,
+            "reactions": 0,
+            "photos": Photo.objects.none(),
+            "filter_status": "all",
+        })
+
+    photos = event.photos.all().order_by("-created_at", "-id")
+    filter_status = request.GET.get("status", "all")
+    if filter_status == "hidden":
+        displayed_photos = photos.filter(is_approved=False)
+    elif filter_status == "approved":
+        displayed_photos = photos.filter(is_approved=True)
+    else:
+        displayed_photos = photos
+
     return render(request, "couple/dashboard.html", {
         "event": event,
+        "available_events": user_events,
         "total": photos.count(),
+        "approved_count": photos.filter(is_approved=True).count(),
+        "hidden_count": photos.filter(is_approved=False).count(),
         "guests": photos.exclude(guest_name="").values("guest_name").distinct().count(),
         "today": photos.filter(created_at__date=date.today()).count(),
-        "reactions": Reaction.objects.filter(photo__event=event).count() if event else 0,
-        "latest": photos.select_related("event")[:12],
+        "reactions": Reaction.objects.filter(photo__event=event).count(),
+        "photos": displayed_photos.select_related("event"),
+        "filter_status": filter_status,
     })
 
 
 @login_required
 def download_photo(request, pk):
     photo = get_object_or_404(Photo, pk=pk)
+    if not can_manage_event(request.user, photo.event):
+        return HttpResponseForbidden("Você não tem permissão para acessar esta foto.")
     photo.image.open("rb")
     suffix = Path(photo.image.name).suffix or ".jpg"
     return FileResponse(photo.image, as_attachment=True, filename=f"foto-{photo.id}{suffix}")
@@ -205,6 +255,8 @@ def download_photo(request, pk):
 @login_required
 def download_album(request, pk):
     event = get_object_or_404(Event, pk=pk)
+    if not can_manage_event(request.user, event):
+        return HttpResponseForbidden("Você não tem permissão para baixar o álbum deste evento.")
     archive_file = tempfile.SpooledTemporaryFile(max_size=10 * 1024 * 1024)
     used_names = set()
     with zipfile.ZipFile(archive_file, "w", compression=zipfile.ZIP_DEFLATED) as archive:
@@ -228,11 +280,49 @@ def download_album(request, pk):
 @login_required
 def qrcode_page(request, pk):
     event = get_object_or_404(Event, pk=pk)
+    if not can_manage_event(request.user, event):
+        return HttpResponseForbidden("Você não tem permissão para visualizar o QR Code deste evento.")
     url = f"{settings.EVENT_BASE_URL.rstrip('/')}/e/{event.slug}/"
     qr = qrcode.make(url)
     buffer = BytesIO()
     qr.save(buffer, format="PNG")
     return render(request, "events/qrcode.html", {"event": event, "qr": base64.b64encode(buffer.getvalue()).decode(), "url": url})
+
+
+@require_POST
+@login_required
+def toggle_photo_approval(request, pk):
+    photo = get_object_or_404(Photo.objects.select_related("event"), pk=pk)
+    if not can_manage_event(request.user, photo.event):
+        return HttpResponseForbidden("Você não tem permissão para moderar fotos deste evento.")
+    photo.is_approved = not photo.is_approved
+    photo.save(update_fields=["is_approved"])
+    return render(request, "couple/components/moderation_card.html", {"photo": photo})
+
+
+def couple_login(request):
+    if request.user.is_authenticated:
+        return redirect("couple-dashboard")
+
+    next_url = request.GET.get("next") or request.POST.get("next") or reverse("couple-dashboard")
+    if request.method == "POST":
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            auth_login(request, form.get_user())
+            return redirect(next_url)
+    else:
+        form = AuthenticationForm(request)
+
+    return render(request, "auth/login.html", {
+        "form": form,
+        "next": next_url,
+    })
+
+
+def couple_logout(request):
+    if request.method in {"POST", "GET"}:
+        auth_logout(request)
+    return redirect("home")
 
 
 def error_404(request, exception):

@@ -70,7 +70,9 @@ if os.getenv("CLOUDINARY_URL"):
     STORAGES["default"] = {"BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage"}
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-LOGIN_URL = "/admin/login/"
+LOGIN_URL = "/login/"
+LOGIN_REDIRECT_URL = "/casal/"
+LOGOUT_REDIRECT_URL = "/"
 CSRF_TRUSTED_ORIGINS = env_list("CSRF_TRUSTED_ORIGINS")
 EVENT_BASE_URL = os.getenv("EVENT_BASE_URL", "http://localhost:8000")
 AUTO_APPROVE_UPLOADS = env_bool("AUTO_APPROVE_UPLOADS", True)

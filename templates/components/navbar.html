@@ -1,0 +1,26 @@
+<header class="site-header">
+  <nav class="top-nav" aria-label="Navegação principal">
+    <div class="nav-container">
+      <a href="{% url 'home' %}" class="nav-brand" aria-label="Ir para a página inicial">
+        <span class="brand-monogram">H <i>&amp;</i> V</span>
+        <span class="brand-title">Helena <i>&amp;</i> Victor</span>
+      </a>
+
+      <div class="nav-actions">
+        {% if request.user.is_authenticated %}
+          <a href="{% url 'couple-dashboard' %}" class="nav-link nav-dashboard-link">
+            <span>💍</span> <b>Painel do Casal</b>
+          </a>
+          <form action="{% url 'logout' %}" method="post" class="logout-form">
+            {% csrf_token %}
+            <button type="submit" class="nav-btn-logout">Sair</button>
+          </form>
+        {% else %}
+          <a href="{% url 'login' %}" class="nav-link nav-login-link">
+            <span>✨</span> <b>Área dos Noivos</b>
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+</header>

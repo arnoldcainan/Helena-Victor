@@ -1,1 +1,67 @@
-{% extends 'base.html' %}{% block content %}<main class="dashboard"><a href="{% url 'home' %}">← Ver álbum</a><h1>Painel do casal</h1>{% if event %}<div class="dashboard-actions"><a class="button primary" href="{% url 'download-album' event.id %}">Baixar álbum completo (.zip)</a><a class="button" href="{% url 'qrcode' event.id %}">Abrir QR Code</a></div>{% endif %}<div class="stats"><div><b>{{ total }}</b><span>fotos</span></div><div><b>{{ guests }}</b><span>convidados</span></div><div><b>{{ today }}</b><span>hoje</span></div><div><b>{{ reactions }}</b><span>reações</span></div></div><div class="gallery">{% for photo in latest %}{% include 'components/photo_card.html' %}{% endfor %}</div></main>{% endblock %}
+{% extends 'base.html' %}
+{% block content %}
+<main class="dashboard">
+  <div class="dashboard-header">
+    {% if event %}
+      <a class="back-link" href="{% url 'event-detail' event.slug %}">← Ver álbum público</a>
+    {% else %}
+      <a class="back-link" href="{% url 'home' %}">← Início</a>
+    {% endif %}
+    <h1>Painel do Casal</h1>
+    {% if event %}
+      <p class="event-subtitle">Gerenciando: <strong>{{ event.name }}</strong> ({{ event.date|date:"d/m/Y" }})</p>
+    {% endif %}
+  </div>
+
+  {% if available_events|length > 1 %}
+    <div class="event-selector-bar">
+      <label for="event-select"><strong>Selecionar evento:</strong></label>
+      <select id="event-select" onchange="if (this.value) window.location.href = '?event=' + this.value;">
+        {% for ev in available_events %}
+          <option value="{{ ev.id }}" {% if ev.id == event.id %}selected{% endif %}>{{ ev.name }} ({{ ev.date|date:"d/m/Y" }})</option>
+        {% endfor %}
+      </select>
+    </div>
+  {% endif %}
+
+  {% if event %}
+    <div class="dashboard-actions">
+      <a class="button primary" href="{% url 'download-album' event.id %}">📦 Baixar álbum completo (.zip)</a>
+      <a class="button" href="{% url 'qrcode' event.id %}">📱 Abrir QR Code</a>
+    </div>
+
+    <div class="stats">
+      <div><b>{{ total }}</b><span>total de fotos</span></div>
+      <div><b>{{ approved_count }}</b><span>visíveis</span></div>
+      <div><b>{{ hidden_count }}</b><span>ocultadas</span></div>
+      <div><b>{{ guests }}</b><span>convidados</span></div>
+      <div><b>{{ reactions }}</b><span>reações</span></div>
+    </div>
+
+    <div class="dashboard-filter-tabs">
+      <a href="?{% if request.GET.event %}event={{ request.GET.event }}&{% endif %}status=all" class="{% if filter_status == 'all' %}active{% endif %}">Todas as fotos ({{ total }})</a>
+      <a href="?{% if request.GET.event %}event={{ request.GET.event }}&{% endif %}status=approved" class="{% if filter_status == 'approved' %}active{% endif %}">Visíveis na galeria ({{ approved_count }})</a>
+      <a href="?{% if request.GET.event %}event={{ request.GET.event }}&{% endif %}status=hidden" class="{% if filter_status == 'hidden' %}active{% endif %}">Ocultadas ({{ hidden_count }})</a>
+    </div>
+
+    {% if photos %}
+      <div class="gallery" id="moderation-gallery">
+        {% for photo in photos %}
+          {% include 'couple/components/moderation_card.html' %}
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty">
+        <span>📷</span>
+        <p>Nenhuma foto encontrada nesta visualização.</p>
+      </div>
+    {% endif %}
+  {% else %}
+    <div class="empty">
+      <span>🔒</span>
+      <h2>Nenhum evento associado</h2>
+      <p>Seu usuário não possui nenhum evento vinculado para moderação no momento.</p>
+    </div>
+  {% endif %}
+</main>
+{% endblock %}

@@ -191,6 +191,7 @@ class StoredImagePrivacyTests(TestCase):
         )
         photo = Photo.objects.get()
         user = get_user_model().objects.create_user("couple", password="secret")
+        self.event.users.add(user)
         self.client.force_login(user)
 
         response = self.client.get(reverse("download-photo", args=[photo.pk]))
